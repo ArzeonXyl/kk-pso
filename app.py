@@ -8,10 +8,8 @@ import io
 import base64
 
 app = Flask(__name__)
-app.secret_key = 'kk'
+app.secret_key = 'kunci_rahasia_untuk_tugas_akhir'
 plt.switch_backend('Agg')
-
-
 
 def decode_posisi_ke_rute_manual(posisi):
     posisi_berindeks = list(enumerate(posisi))
@@ -39,6 +37,9 @@ def solve_pso_for_tsp(daftar_kota, n_partikel, max_iter, w, c1, c2, r1, r2):
         fitness_awal = hitung_total_jarak(rute_awal, daftar_kota)
         partikel = {'id': i + 1, 'posisi': posisi_awal, 'kecepatan': kecepatan_awal, 'pbest_posisi': posisi_awal[:], 'pbest_fitness': fitness_awal}
         swarm.append(partikel)
+        
+        # --- PERBAIKAN SEBENARNYA ADA DI SINI ---
+        # Memastikan 'posisi': posisi_awal ikut disimpan di dalam log inisialisasi
         log_inisialisasi.append({ "id": i + 1, "posisi": posisi_awal, "rute": rute_awal, "fitness": fitness_awal })
         
     gbest_posisi, gbest_fitness = [], float('inf')
@@ -68,8 +69,6 @@ def solve_pso_for_tsp(daftar_kota, n_partikel, max_iter, w, c1, c2, r1, r2):
         log_iterasi_saat_ini["gbest_fitness"], log_iterasi_saat_ini["gbest_rute"] = gbest_fitness, decode_posisi_ke_rute_manual(gbest_posisi)
         log_seluruh_iterasi.append(log_iterasi_saat_ini)
     return log_inisialisasi, log_seluruh_iterasi
-
-
 
 def parse_koordinat(text_area_input):
     daftar_kota = []
@@ -163,17 +162,14 @@ def index():
             flash(f"Terjadi kesalahan internal: {e}")
             return redirect(url_for('index'))
 
-
 @app.route('/lihat-kode')
 def lihat_kode():
-    """Route ini membaca file app.py dan menampilkannya di halaman baru."""
     try:
         with open('app.py', 'r', encoding='utf-8') as f:
             kode_sumber = f.read()
         return render_template('script_code.html', kode_sumber=kode_sumber)
     except Exception as e:
         return f"Gagal membaca file kode: {e}"
-
 
 if __name__ == '__main__':
     app.run(debug=True)
