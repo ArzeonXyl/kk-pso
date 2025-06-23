@@ -8,7 +8,7 @@ import io
 import base64
 
 app = Flask(__name__)
-app.secret_key = 'kunci_rahasia_untuk_tugas_akhir'
+app.secret_key = 'untuk_tugas_akhir_pso'
 plt.switch_backend('Agg')
 
 def decode_posisi_ke_rute_manual(posisi):
@@ -20,10 +20,12 @@ def hitung_jarak_euclidean(kota1, kota2):
     return math.sqrt((kota1['x'] - kota2['x'])**2 + (kota1['y'] - kota2['y'])**2)
 
 def hitung_total_jarak(rute, daftar_kota):
+
     total_jarak = 0
-    for i in range(len(rute)):
+
+    for i in range(len(rute) - 1):
         kota_sekarang_idx = rute[i]
-        kota_berikutnya_idx = rute[0] if i == len(rute) - 1 else rute[i+1]
+        kota_berikutnya_idx = rute[i+1]
         total_jarak += hitung_jarak_euclidean(daftar_kota[kota_sekarang_idx], daftar_kota[kota_berikutnya_idx])
     return total_jarak
 
@@ -37,9 +39,6 @@ def solve_pso_for_tsp(daftar_kota, n_partikel, max_iter, w, c1, c2, r1, r2):
         fitness_awal = hitung_total_jarak(rute_awal, daftar_kota)
         partikel = {'id': i + 1, 'posisi': posisi_awal, 'kecepatan': kecepatan_awal, 'pbest_posisi': posisi_awal[:], 'pbest_fitness': fitness_awal}
         swarm.append(partikel)
-        
-        # --- PERBAIKAN SEBENARNYA ADA DI SINI ---
-        # Memastikan 'posisi': posisi_awal ikut disimpan di dalam log inisialisasi
         log_inisialisasi.append({ "id": i + 1, "posisi": posisi_awal, "rute": rute_awal, "fitness": fitness_awal })
         
     gbest_posisi, gbest_fitness = [], float('inf')
@@ -94,12 +93,15 @@ def buat_matriks_jarak(daftar_kota):
     return matriks
 
 def buat_plot_base64(daftar_kota, rute, fitness, judul_plot):
+
     fig, ax = plt.subplots(figsize=(8, 6))
     if rute:
-        for i in range(len(rute)):
+
+        for i in range(len(rute) - 1):
             kota_awal = daftar_kota[rute[i]]
-            kota_akhir = daftar_kota[rute[0] if i == len(rute) - 1 else rute[i+1]]
+            kota_akhir = daftar_kota[rute[i+1]]
             ax.plot([kota_awal['x'], kota_akhir['x']], [kota_awal['y'], kota_akhir['y']], 'c-o', markersize=8)
+
     for kota in daftar_kota:
         ax.plot(kota['x'], kota['y'], 'ro')
         ax.text(kota['x'] + 1, kota['y'] + 1, kota['nama'], fontsize=12, ha='center')
@@ -141,7 +143,7 @@ def index():
             gbest_fitness_awal = min(p['fitness'] for p in log_awal)
             gbest_rute_awal = next((p['rute'] for p in log_awal if p['fitness'] == gbest_fitness_awal), [])
             plot_awal = buat_plot_base64(daftar_kota, gbest_rute_awal, gbest_fitness_awal, "Rute gBest Awal (Iterasi 0)")
-            hasil_untuk_template['laporan_iterasi'].append({"judul": "ANALISIS KONDISI AWAL (ITERASI 0)", "data_tabel": log_awal, "plot_base64": plot_awal, "tipe": "awal", "gbest_rute": gbest_rute_awal, "gbest_rute_nama": rute_ke_nama(gbest_rute_awal, daftar_kota)})
+            hasil_untuk_template['laporan_iterasi'].append({"judul": "ANALISIS KONDISI AWAL (ITERASI 0)", "data_tabel": log_awal, "plot_base64": plot_awal, "tipe": "awal", "gbest_rute_nama": rute_ke_nama(gbest_rute_awal, daftar_kota)})
             
             for log_iter in log_iterasi_hasil:
                 iterasi_ke = log_iter['iterasi_ke']

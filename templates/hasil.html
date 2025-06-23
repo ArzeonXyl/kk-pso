@@ -23,30 +23,44 @@
             </div>
 
             <div class="mt-6 p-4 bg-gray-50 rounded-lg border">
-                <h2 class="text-xl font-semibold mb-3">Ringkasan Hasil</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div>
-                        <span class="font-medium text-gray-600">Jarak Terpendek Final:</span>
-                        <strong class="block text-xl text-green-600">{{ "%.2f"|format(hasil.laporan_iterasi[-1].gbest_fitness) }}</strong>
+                <h2 class="text-xl font-semibold mb-4">Ringkasan Hasil Akhir</h2>
+                <div class="space-y-4">
+                    <!-- Baris untuk Jarak dan Rute -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="md:col-span-1">
+                            <span class="font-medium text-gray-600">Jarak Terpendek Final:</span>
+                            <strong class="block text-2xl text-green-600">{{ "%.2f"|format(hasil.laporan_iterasi[-1].gbest_fitness) }}</strong>
+                        </div>
+                        <div class="md:col-span-2">
+                            <span class="font-medium text-gray-600">Rute Optimal Final:</span>
+                            {% set gbest_rute_final = hasil.laporan_iterasi[-1].gbest_rute %}
+                            <strong class="block text-lg font-mono text-green-700 break-words">{{ hasil.laporan_iterasi[-1].gbest_rute_nama }}</strong>
+                        </div>
                     </div>
-                    <div>
-                        <span class="font-medium text-gray-600">Waktu Komputasi:</span>
-                        <strong class="block text-xl">{{ "%.4f"|format(hasil.waktu_komputasi) }} detik</strong>
-                    </div>
-                    <div>
-                        <span class="font-medium text-gray-600">Jumlah Iterasi:</span>
-                        <strong class="block text-xl">{{ hasil.parameter_input.max_iter }}</strong>
-                    </div>
-                     <div>
-                        <span class="font-medium text-gray-600">Jumlah Partikel:</span>
-                        <strong class="block text-xl">{{ hasil.parameter_input.n_partikel }}</strong>
+                    <!-- Baris untuk Parameter Lainnya -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm pt-4 border-t">
+                         <div>
+                            <span class="font-medium text-gray-600">Jumlah Partikel:</span>
+                            <strong class="block text-lg">{{ hasil.parameter_input.n_partikel }}</strong>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-600">Jumlah Lokasi (BTS):</span>
+                            <strong class="block text-lg">{{ hasil.daftar_kota_awal|length }}</strong>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-600">Jumlah Iterasi:</span>
+                            <strong class="block text-lg">{{ hasil.parameter_input.max_iter }}</strong>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-600">Waktu Komputasi:</span>
+                            <strong class="block text-lg">{{ "%.4f"|format(hasil.waktu_komputasi) }} detik</strong>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Bagian untuk Matriks Jarak -->
             <div class="mt-10 pt-6 border-t-2 border-dashed">
-                <h2 class="text-xl font-semibold mb-4 text-blue-700">Matriks Jarak Antar Lokasi (Fitness)</h2>
+                <h2 class="text-xl font-semibold mb-4 text-blue-700">Matriks Jarak Antar Lokasi</h2>
                 <div class="overflow-x-auto bg-white rounded-lg shadow border">
                     <table class="min-w-full text-sm">
                         <thead class="bg-gray-200">
@@ -62,7 +76,7 @@
                             <tr>
                                 <td class="px-4 py-2 whitespace-nowrap font-semibold bg-gray-50">{{ hasil.daftar_kota_awal[loop.index0].nama }}</td>
                                 {% for jarak in row %}
-                                    <td class="px-4 py-2 whitespace-nowrap text-center">{{ "%.2f"|format(jarak) }}</td>
+                                    <td class="px-4 py-2 whitespace-nowrap text-center font-mono">{{ "%.2f"|format(jarak) }}</td>
                                 {% endfor %}
                             </tr>
                             {% endfor %}
@@ -71,15 +85,14 @@
                 </div>
             </div>
 
-            <!-- Loop untuk menampilkan setiap iterasi -->
             {% for laporan in hasil.laporan_iterasi %}
             <div class="mt-10 pt-6 border-t-2 border-dashed">
                 <h2 class="text-xl font-semibold mb-2 text-blue-700">{{ laporan.judul }}</h2>
                 
                 <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
                     <span class="font-semibold text-blue-800">Rute Optimal (gBest) Iterasi ini:</span>
-                    {% if laporan.gbest_rute %}
-                    <p class="font-mono text-blue-900 mt-1">{{ laporan.gbest_rute_nama }} -> {{ hasil.daftar_kota_awal[laporan.gbest_rute[0]].nama }}</p>
+                    {% if laporan.gbest_rute_nama %}
+                    <p class="font-mono text-blue-900 mt-1">{{ laporan.gbest_rute_nama }}</p>
                     {% endif %}
                 </div>
 
@@ -87,7 +100,6 @@
                     
                     <div class="overflow-x-auto bg-white rounded-lg shadow border">
                         {% if laporan.tipe == 'awal' %}
-                        <!-- Tabel untuk Iterasi 0 -->
                         <table class="min-w-full text-sm">
                             <thead class="bg-gray-200">
                                 <tr>
@@ -111,15 +123,12 @@
                             </tbody>
                         </table>
                         {% else %}
-                        <!-- Tabel untuk Iterasi Lanjutan dengan semua kolom -->
                         <table class="min-w-full text-sm">
                              <thead class="bg-gray-200">
                                 <tr>
                                     <th class="px-2 py-2 text-left font-semibold text-gray-600">Partikel</th>
                                     <th class="px-2 py-2 text-left font-semibold text-gray-600">Rute Terbaru</th>
                                     <th class="px-2 py-2 text-left font-semibold text-gray-600">Fitness</th>
-                                    <th class="px-2 py-2 text-left font-semibold text-gray-600">Velocity Δ</th>
-                                    <th class="px-2 py-2 text-left font-semibold text-gray-600">Position Δ</th>
                                     <th class="px-2 py-2 text-left font-semibold text-gray-600">Pbest Fitness</th>
                                     <th class="px-2 py-2 text-left font-semibold text-gray-600">Gbest Fitness</th>
                                 </tr>
@@ -130,12 +139,6 @@
                                     <td class="px-2 py-2 whitespace-nowrap">{{ data.id }}</td>
                                     <td class="px-2 py-2 font-mono text-xs">{{ data.rute_nama }}</td>
                                     <td class="px-2 py-2 whitespace-nowrap">{{ "%.2f"|format(data.fitness) }}</td>
-                                    <td class="px-2 py-2 font-mono text-xs">
-                                        [{% for v in data.velocity_delta %}{{ "%+.2f"|format(v) }}{% if not loop.last %}, {% endif %}{% endfor %}]
-                                    </td>
-                                    <td class="px-2 py-2 font-mono text-xs">
-                                        [{% for v in data.position_delta %}{{ "%+.2f"|format(v) }}{% if not loop.last %}, {% endif %}{% endfor %}]
-                                    </td>
                                     <td class="px-2 py-2 whitespace-nowrap">{{ "%.2f"|format(data.pbest_fitness_terbaru) }}</td>
                                     <td class="px-2 py-2 whitespace-nowrap">{{ "%.2f"|format(laporan.gbest_fitness) }}</td>
                                 </tr>
