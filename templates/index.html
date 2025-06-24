@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PSO untuk Optimasi Rute BTS</title>
-    <!-- Memuat Tailwind CSS dari CDN untuk styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Menggunakan font Inter untuk tampilan yang lebih modern -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -18,7 +16,6 @@
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
         <div class="bg-white shadow-lg rounded-xl overflow-hidden">
-            <!-- ================== PERUBAHAN DI SINI ================== -->
             <div class="bg-blue-600 p-6 flex justify-between items-center">
                 <div>
                     <h1 class="text-2xl sm:text-3xl font-bold text-white">Optimasi Rute BTS dengan Particle Swarm Optimization (PSO)</h1>
@@ -29,7 +26,7 @@
                     Lihat Kode
                 </a>
             </div>
-            <!-- ======================================================= -->
+
 
             <div class="p-6">
                 {% with messages = get_flashed_messages() %}
@@ -46,8 +43,7 @@
                 {% endwith %}
 
                 <form action="/" method="POST">
-                    
-                    <!-- Bagian Parameter PSO -->
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="col-span-1 md:col-span-3">
                             <h2 class="text-xl font-semibold border-b pb-2 mb-4 text-blue-700">Parameter Algoritma PSO</h2>
@@ -79,15 +75,13 @@
                         </div>
                     </div>
 
-                    <!-- Bagian Input Koordinat -->
                     <div class="mt-8">
                          <h2 class="text-xl font-semibold border-b pb-2 mb-4 text-blue-700">Data Lokasi BTS</h2>
                         <label for="koordinat_bts" class="block text-sm font-medium text-gray-700">Koordinat BTS</label>
                         <p class="text-xs text-gray-500 mb-2">Masukkan satu lokasi per baris dengan format: <strong class="font-mono">Nama,X,Y</strong> (contoh: A,60,200)</p>
                         <textarea name="koordinat_bts" id="koordinat_bts" rows="10" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border font-mono" placeholder="A,60,200&#10;B,180,200&#10;C,80,180&#10;D,140,180&#10;E,20,160&#10;F,100,160"></textarea>
                     </div>
-                    
-                    <!-- Tombol Submit -->
+
                     <div class="mt-8 text-right">
                         <button type="submit" class="inline-flex justify-center py-3 px-6 border border-transparent shadow-lg text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                             Jalankan Optimisasi
