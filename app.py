@@ -8,7 +8,7 @@ import io
 import base64
 
 app = Flask(__name__)
-app.secret_key = 'untuk_tugas_akhir_pso'
+app.secret_key = 'pso_tsp'
 plt.switch_backend('Agg')
 
 def decode_posisi_ke_rute_manual(posisi):
